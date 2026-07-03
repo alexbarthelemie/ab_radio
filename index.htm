@@ -42,6 +42,12 @@ button:hover {
   font-size: 14px;
   color: #ccc;
 }
+
+input[type="range"] {
+  width: 260px;
+  accent-color: orange;
+  margin-top: 8px;
+}
 </style>
 
 </head>
@@ -63,6 +69,11 @@ button:hover {
 
 <br>
 <button onclick="stopAudio()">⛔ Stop</button>
+
+<div id="volumeControl" style="margin-top: 10px;">
+  <label for="volumeSlider" style="font-size: 14px; color: #ccc;">🔊 Volume</label><br>
+  <input type="range" id="volumeSlider" min="0" max="100" value="100" oninput="setVolume(this.value)">
+</div>
 
 <div id="status">Prêt</div>
 
@@ -185,6 +196,15 @@ function stopAudio() {
   player.src = "";
   document.getElementById("status").innerText = "⛔ Arrêt";
 }
+
+function setVolume(value) {
+  let player = document.getElementById("player");
+  player.volume = value / 100;
+}
+
+// Initialize volume to max
+document.getElementById("player").volume = 1;
+
 </script>
 
 </body>
