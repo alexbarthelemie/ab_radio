@@ -52,7 +52,7 @@ button:hover {
 <div id="menuRadios">
   <button onclick="selectRadio('francemusique')">France Musique</button>
   <button onclick="selectRadio('fip')">FIP</button>
-  <button onclick="selectRadio('somafm')">SomaFM</button>
+  <button onclick="selectRadio('1fm')">1.FM</button>
   <button onclick="selectRadio('ssl')">Sunshine Live</button>
 </div>
 
@@ -91,14 +91,12 @@ fip: {
   ]
 },
 
-somafm: {
-  name: "SomaFM",
-  stations: [
+1fm: {
+  name: "1.FM",
+  streams: [
     {
-      name: "Bossa Beyond",
-      urls: [
-        "https://somafm.com/bossa.pls"
-      ]
+      name: "Bossa Nova",
+      url: "http://strm112.1.fm/bossanova_mobile_mp3"
     }
   ]
 },
