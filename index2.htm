@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Alex's Radios</title>
+
+<style>
+body {
+  background: black;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+h2 {
+  margin-top: 20px;
+}
+
+button {
+  display: block;
+  width: 260px;
+  margin: 8px auto;
+  padding: 12px;
+  font-size: 15px;
+  background: orange;
+  border: none;
+  border-radius: 8px;
+  color: black;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ffb84d;
+}
+
+.hidden {
+  display: none;
+}
+
+#status {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ccc;
+}
+</style>
+
+</head>
+<body>
+
+<h2 id="title">🎧 Alex's Radios</h2>
+
+<div id="menuRadios">
+  <button onclick="selectRadio('francemusique')">France Musique</button>
+  <button onclick="selectRadio('fip')">FIP</button>
+  <button onclick="selectRadio('1fm')">1FM</button>
+  <button onclick="selectRadio('ssl')">Sunshine Live</button>
+</div>
+
+<div id="menuStations" class="hidden">
+  <button onclick="goBack()">⬅ Retour</button>
+  <div id="stationsList"></div>
+</div>
+
+<br>
+<button onclick="stopAudio()">⛔ Stop</button>
+
+<div id="status">Prêt</div>
+
+<audio id="player"></audio>
+
+<script>
+const radios = {
+
+francemusique: {
+  name: "France Musique",
+  stations: [
+    {name: "Classique Easy", urls: ["https://icecast.radiofrance.fr/francemusiqueeasyclassique-midfi.mp3"]},
+    {name: "Piano Zen", urls: ["https://icecast.radiofrance.fr/francemusiquepianozen-midfi.mp3"]},
+    {name: "Opéra", urls: ["https://icecast.radiofrance.fr/francemusiqueopera-midfi.mp3"]}
+  ]
+},
+
+fip: {
+  name: "FIP",
+  stations: [
+    {name: "Groove", urls: ["https://icecast.radiofrance.fr/fipgroove-midfi.mp3"]},
+    {name: "Jazz", urls: ["https://icecast.radiofrance.fr/fipjazz-midfi.mp3"]},
+    {name: "Electro", urls: ["https://icecast.radiofrance.fr/fipelectro-midfi.mp3"]},
+    {name: "Reggae", urls: ["https://icecast.radiofrance.fr/fipreggae-midfi.mp3"]}
+  ]
+},
+
+"1fm": {
+  name: "1FM",
+  stations: [
+    {
+      name: "Bossa Nova",
+      urls: ["http://strm112.1.fm/bossanova_mobile_mp3"]
+    }
+  ]
+},
+
+ssl: {
+  name: "Sunshine Live",
+  stations: [
+    {name: "Chillout", urls: [
+      "https://stream.sunshine-live.de/chillout/mp3-192/stream.sunshine-live.de/",
+      "https://stream.sunshine-live.de/chillout/mp3-128/stream.sunshine-live.de/"
+    ]},
+    {name: "Lounge", urls: [
+      "https://stream.sunshine-live.de/lounge/mp3-192/stream.sunshine-live.de/"
+    ]},
+    {name: "Electric Café", urls: [
+      "https://stream.sunshine-live.de/electronic/mp3-192/stream.sunshine-live.de/"
+    ]},
+    {name: "Calm Flow", urls: [
+      "https://stream.sunshine-live.de/calmflow/mp3-192/stream.sunshine-live.de/"
+    ]}
+  ]
+}
+
+};
+
+let currentIndex = 0;
+let currentUrls = [];
+
+function selectRadio(radioKey) {
+  document.getElementById("menuRadios").classList.add("hidden");
+  document.getElementById("menuStations").classList.remove("hidden");
+
+  let radio = radios[radioKey];
+  document.getElementById("title").innerText = "🎧 " + radio.name;
+
+  let list = document.getElementById("stationsList");
+  list.innerHTML = "";
+
+  radio.stations.forEach(station => {
+    let btn = document.createElement("button");
+    btn.innerText = station.name;
+    btn.onclick = () => playStation(station);
+    list.appendChild(btn);
+  });
+}
+
+function goBack() {
+  stopAudio();
+  document.getElementById("menuRadios").classList.remove("hidden");
+  document.getElementById("menuStations").classList.add("hidden");
+  document.getElementById("title").innerText = "🎧 Alex's Radios";
+}
+
+function playStation(station) {
+  currentUrls = station.urls || (station.url ? [station.url] : []);
+  currentIndex = 0;
+
+  if (!currentUrls || currentUrls.length === 0) {
+    document.getElementById("status").innerText = "❌ Aucun flux disponible";
+    return;
+  }
+
+  document.getElementById("status").innerText = "⏳ Chargement : " + station.name;
+  tryPlay(station.name);
+}
+
+function tryPlay(name) {
+  let player = document.getElementById("player");
+
+  if (currentIndex >= currentUrls.length) {
+    document.getElementById("status").innerText = "❌ Flux indisponible";
+    return;
+  }
+
+  player.src = currentUrls[currentIndex];
+  player.play().then(() => {
+    document.getElementById("status").innerText = "🔊 Lecture : " + name;
+  }).catch(() => {
+    currentIndex++;
+    tryPlay(name);
+  });
+}
+
+function stopAudio() {
+  let player = document.getElementById("player");
+  player.pause();
+  player.src = "";
+  document.getElementById("status").innerText = "⛔ Arrêt";
+}
+</script>
+
+</body>
+</html>
