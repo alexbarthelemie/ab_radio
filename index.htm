@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Radio Player</title>
+<style>
+body {
+  background: black;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+button {
+  margin: 10px;
+  padding: 10px;
+  font-size: 16px;
+}
+.hidden {
+  display: none;
+}
+</style>
+</head>
+<body>
+
+<h2>🎧 Radio Player</h2>
+
+<div id="menuRadios">
+  <button onclick="showStations('fip')">FIP</button>
+  <button onclick="showStations('somafm')">SomaFM</button>
+  <button onclick="showStations('ssl')">Sunshine Live</button>
+</div>
+
+<div id="menuStations" class="hidden">
+  <button onclick="goBack()">⬅ Retour</button>
+  <div id="stationsList"></div>
+</div>
+
+<br>
+<button onclick="stopAudio()">⛔ Stop</button>
+
+<audio id="player" controls autoplay></audio>
+
+<script>
+const stations = {
+  fip: [
+    {name: "FIP", url: "https://icecast.radiofrance.fr/fip-midfi.mp3"},
+    {name: "FIP Groove", url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3"},
+    {name: "FIP Rock", url: "https://icecast.radiofrance.fr/fiprock-midfi.mp3"}
+  ],
+  somafm: [
+    {name: "Groove Salad", url: "https://ice1.somafm.com/groovesalad-128-mp3"},
+    {name: "Drone Zone", url: "https://ice1.somafm.com/dronezone-128-mp3"}
+  ],
+  ssl: [
+    {name: "Sunshine Live", url: "https://stream.sunshine-live.de/live/mp3-192/stream.sunshine-live.de/"},
+    {name: "EDM", url: "https://stream.sunshine-live.de/edm/mp3-192/stream.sunshine-live.de/"}
+  ]
+};
+
+function showStations(radio) {
+  document.getElementById("menuRadios").classList.add("hidden");
+  document.getElementById("menuStations").classList.remove("hidden");
+
+  let list = document.getElementById("stationsList");
+  list.innerHTML = "";
+
+  stations[radio].forEach(station => {
+    let btn = document.createElement("button");
+    btn.innerText = station.name;
+    btn.onclick = () => play(station.url);
+    list.appendChild(btn);
+  });
+}
+
+function goBack() {
+  document.getElementById("menuRadios").classList.remove("hidden");
+  document.getElementById("menuStations").classList.add("hidden");
+}
+
+function play(url) {
+  let player = document.getElementById("player");
+  player.src = url;
+  player.play();
+}
+
+function stopAudio() {
+  let player = document.getElementById("player");
+  player.pause();
+  player.src = "";
+}
+</script>
+
+</body>
+</html>
