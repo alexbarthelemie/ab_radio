@@ -52,7 +52,7 @@ button:hover {
 <div id="menuRadios">
   <button onclick="selectRadio('francemusique')">France Musique</button>
   <button onclick="selectRadio('fip')">FIP</button>
-  <button onclick="selectRadio('1fm')">1.FM</button>
+  <button onclick="selectRadio('1fm')">1FM</button>
   <button onclick="selectRadio('ssl')">Sunshine Live</button>
 </div>
 
@@ -75,7 +75,6 @@ francemusique: {
   name: "France Musique",
   stations: [
     {name: "Classique Easy", urls: ["https://icecast.radiofrance.fr/francemusiqueeasyclassique-midfi.mp3"]},
-    {name: "Classic Love", urls: ["https://icecast.radiofrance.fr/francemusiquelove-midfi.mp3"]},
     {name: "Piano Zen", urls: ["https://icecast.radiofrance.fr/francemusiquepianozen-midfi.mp3"]},
     {name: "Opéra", urls: ["https://icecast.radiofrance.fr/francemusiqueopera-midfi.mp3"]}
   ]
@@ -91,12 +90,12 @@ fip: {
   ]
 },
 
-1fm: {
-  name: "1.FM",
-  streams: [
+"1fm": {
+  name: "1FM",
+  stations: [
     {
       name: "Bossa Nova",
-      url: "http://strm112.1.fm/bossanova_mobile_mp3"
+      urls: ["http://strm112.1.fm/bossanova_mobile_mp3"]
     }
   ]
 },
@@ -151,8 +150,14 @@ function goBack() {
 }
 
 function playStation(station) {
-  currentUrls = station.urls;
+  currentUrls = station.urls || (station.url ? [station.url] : []);
   currentIndex = 0;
+
+  if (!currentUrls || currentUrls.length === 0) {
+    document.getElementById("status").innerText = "❌ Aucun flux disponible";
+    return;
+  }
+
   document.getElementById("status").innerText = "⏳ Chargement : " + station.name;
   tryPlay(station.name);
 }
