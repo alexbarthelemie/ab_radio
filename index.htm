@@ -2,7 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Radio Player</title>
+<title>Alex's Radios</title>
+
 <style>
 body {
   background: black;
@@ -10,26 +11,47 @@ body {
   font-family: Arial;
   text-align: center;
 }
-button {
-  margin: 10px;
-  padding: 10px;
-  font-size: 16px;
+
+h2 {
+  margin-top: 20px;
 }
+
+button {
+  display: block;
+  width: 250px;
+  margin: 10px auto;
+  padding: 12px;
+  font-size: 16px;
+  background: orange;
+  border: none;
+  border-radius: 8px;
+  color: black;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ffb84d;
+}
+
 .hidden {
   display: none;
 }
 </style>
+
 </head>
 <body>
 
-<h2>🎧 Radio Player</h2>
+<h2 id="title">🎧 Alex's Radios</h2>
 
+<!-- MENU PRINCIPAL -->
 <div id="menuRadios">
-  <button onclick="showStations('fip')">FIP</button>
-  <button onclick="showStations('somafm')">SomaFM</button>
-  <button onclick="showStations('ssl')">Sunshine Live</button>
+  <button onclick="selectRadio('francemusique')">France Musique</button>
+  <button onclick="selectRadio('fip')">FIP</button>
+  <button onclick="selectRadio('somafm')">SomaFM</button>
+  <button onclick="selectRadio('ssl')">Sunshine Live</button>
 </div>
 
+<!-- MENU STATIONS -->
 <div id="menuStations" class="hidden">
   <button onclick="goBack()">⬅ Retour</button>
   <div id="stationsList"></div>
@@ -38,33 +60,60 @@ button {
 <br>
 <button onclick="stopAudio()">⛔ Stop</button>
 
-<audio id="player" controls autoplay></audio>
+<audio id="player" autoplay></audio>
 
 <script>
-const stations = {
-  fip: [
-    {name: "FIP", url: "https://icecast.radiofrance.fr/fip-midfi.mp3"},
-    {name: "FIP Groove", url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3"},
-    {name: "FIP Rock", url: "https://icecast.radiofrance.fr/fiprock-midfi.mp3"}
-  ],
-  somafm: [
-    {name: "Groove Salad", url: "https://ice1.somafm.com/groovesalad-128-mp3"},
-    {name: "Drone Zone", url: "https://ice1.somafm.com/dronezone-128-mp3"}
-  ],
-  ssl: [
-    {name: "Sunshine Live", url: "https://stream.sunshine-live.de/live/mp3-192/stream.sunshine-live.de/"},
-    {name: "EDM", url: "https://stream.sunshine-live.de/edm/mp3-192/stream.sunshine-live.de/"}
-  ]
+const radios = {
+
+  francemusique: {
+    name: "France Musique",
+    stations: [
+      {name: "France Musique", url: "https://icecast.radiofrance.fr/francemusique-midfi.mp3"},
+      {name: "Concerts Radio France", url: "https://icecast.radiofrance.fr/francemusiqueconcert-midfi.mp3"}
+    ]
+  },
+
+  fip: {
+    name: "FIP",
+    stations: [
+      {name: "FIP", url: "https://icecast.radiofrance.fr/fip-midfi.mp3"},
+      {name: "FIP Groove", url: "https://icecast.radiofrance.fr/fipgroove-midfi.mp3"},
+      {name: "FIP Rock", url: "https://icecast.radiofrance.fr/fiprock-midfi.mp3"},
+      {name: "FIP Jazz", url: "https://icecast.radiofrance.fr/fipjazz-midfi.mp3"}
+    ]
+  },
+
+  somafm: {
+    name: "SomaFM",
+    stations: [
+      {name: "Groove Salad", url: "https://ice1.somafm.com/groovesalad-128-mp3"},
+      {name: "Drone Zone", url: "https://ice1.somafm.com/dronezone-128-mp3"},
+      {name: "Lush", url: "https://ice1.somafm.com/lush-128-mp3"}
+    ]
+  },
+
+  ssl: {
+    name: "Sunshine Live",
+    stations: [
+      {name: "Sunshine Live", url: "https://stream.sunshine-live.de/live/mp3-192/stream.sunshine-live.de/"},
+      {name: "EDM", url: "https://stream.sunshine-live.de/edm/mp3-192/stream.sunshine-live.de/"},
+      {name: "Techno", url: "https://stream.sunshine-live.de/techno/mp3-192/stream.sunshine-live.de/"}
+    ]
+  }
+
 };
 
-function showStations(radio) {
+function selectRadio(radioKey) {
   document.getElementById("menuRadios").classList.add("hidden");
   document.getElementById("menuStations").classList.remove("hidden");
+
+  let radio = radios[radioKey];
+  document.getElementById("title").innerText = "🎧 " + radio.name;
 
   let list = document.getElementById("stationsList");
   list.innerHTML = "";
 
-  stations[radio].forEach(station => {
+  radio.stations.forEach(station => {
     let btn = document.createElement("button");
     btn.innerText = station.name;
     btn.onclick = () => play(station.url);
@@ -75,6 +124,7 @@ function showStations(radio) {
 function goBack() {
   document.getElementById("menuRadios").classList.remove("hidden");
   document.getElementById("menuStations").classList.add("hidden");
+  document.getElementById("title").innerText = "🎧 Alex's Radios";
 }
 
 function play(url) {
